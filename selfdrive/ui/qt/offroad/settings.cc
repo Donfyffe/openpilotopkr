@@ -343,113 +343,17 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : ListWidget(parent) {
   }
 
   addItem(new GitHash());
-  addItem(new GitPullOnBootToggle());
+ // addItem(new GitPullOnBootToggle());
 
-  // preset1 buttons
-  QHBoxLayout *presetone_layout = new QHBoxLayout();
-  presetone_layout->setSpacing(50);
+  addItem(new CPresetWidget());
 
-  QPushButton *presetoneload_btn = new QPushButton("Load Preset1");
-  presetoneload_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
-  presetone_layout->addWidget(presetoneload_btn);
-  QObject::connect(presetoneload_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Do you want to load Preset1?", this)) {
-      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/load_preset1.sh");
-    }
-  });
+  addItem(new CGitGroup());
 
-  QPushButton *presetonesave_btn = new QPushButton("Save Preset1");
-  presetonesave_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
-  presetone_layout->addWidget(presetonesave_btn);
-  QObject::connect(presetonesave_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Do you want to save Preset1?", this)) {
-      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/save_preset1.sh");
-    }
-  });
 
-  // preset2 buttons
-  QHBoxLayout *presettwo_layout = new QHBoxLayout();
-  presettwo_layout->setSpacing(50);
 
-  QPushButton *presettwoload_btn = new QPushButton("Load Preset2");
-  presettwoload_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
-  presettwo_layout->addWidget(presettwoload_btn);
-  QObject::connect(presettwoload_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Do you want to load Preset2?", this)) {
-      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/load_preset2.sh");
-    }
-  });
 
-  QPushButton *presettwosave_btn = new QPushButton("Save Preset2");
-  presettwosave_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
-  presettwo_layout->addWidget(presettwosave_btn);
-  QObject::connect(presettwosave_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Do you want to save Preset2?", this)) {
-      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/save_preset2.sh");
-    }
-  });
+  addItem(new CUtilWidget(this));
 
-  auto paraminit_btn = new ButtonControl("Parameters Init", "RUN");
-  QObject::connect(paraminit_btn, &ButtonControl::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Initialize parameters. Changes in the EON menu are changed to the initial set value. Do you want to proceed?", this)){
-      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/init_param.sh");
-    }
-  });
-
-  addItem(presetone_layout);
-  addItem(presettwo_layout);
-
-  addItem(paraminit_btn);
-
-  const char* git_reset = "/data/openpilot/selfdrive/assets/addon/script/git_reset.sh ''";
-  auto gitresetbtn = new ButtonControl("Git Reset", "RUN");
-  QObject::connect(gitresetbtn, &ButtonControl::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Apply the latest commitment details of Remote Git after forced initialization of local changes. Do you want to proceed?", this)){
-      std::system(git_reset);
-    }
-  });
-  addItem(gitresetbtn);
-
-  const char* gitpull_cancel = "/data/openpilot/selfdrive/assets/addon/script/gitpull_cancel.sh ''";
-  auto gitpullcanceltbtn = new ButtonControl("GitPull Restore", "RUN");
-  QObject::connect(gitpullcanceltbtn, &ButtonControl::clicked, [=]() {
-    std::system(gitpull_cancel);
-    GitPullCancel::confirm(this);
-  });
-  addItem(gitpullcanceltbtn);
-
-  const char* panda_flashing = "/data/openpilot/selfdrive/assets/addon/script/panda_flashing.sh ''";
-  auto pandaflashingtbtn = new ButtonControl("Panda Flashing", "RUN");
-  QObject::connect(pandaflashingtbtn, &ButtonControl::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Panda's green LED blinks quickly during panda flashing. Never turn off or disconnect the device arbitrarily. Do you want to proceed?", this)) {
-      std::system(panda_flashing);
-    }
-  });
-
-  addItem(pandaflashingtbtn);
-  addItem(new SwitchOpenpilot()); // opkr
-  addItem(new BranchSelectCombo()); // opkr
-
-  const char* open_settings = "am start -a android.intent.action.MAIN -n com.android.settings/.Settings";
-  auto open_settings_btn = new ButtonControl("Open Android Settings", "RUN");
-  QObject::connect(open_settings_btn, &ButtonControl::clicked, [=]() {
-    emit closeSettings();
-    std::system(open_settings);
-  });
-  addItem(open_settings_btn);
-  const char* softkey = "am start com.gmd.hidesoftkeys/com.gmd.hidesoftkeys.MainActivity";
-  auto softkey_btn = new ButtonControl("SoftKey RUN/SET", "RUN");
-  QObject::connect(softkey_btn, &ButtonControl::clicked, [=]() {
-    emit closeSettings();
-    std::system(softkey);
-  });
-  addItem(softkey_btn);
-  auto mixplorer_btn = new ButtonControl("RUN Mixplorer", "RUN");
-  QObject::connect(mixplorer_btn, &ButtonControl::clicked, [=]() {
-	  emit closeSettings();
-    std::system("/data/openpilot/selfdrive/assets/addon/script/run_mixplorer.sh");
-  });
-  addItem(mixplorer_btn);
   addItem(uninstallBtn);
   fs_watch = new QFileSystemWatcher(this);
   QObject::connect(fs_watch, &QFileSystemWatcher::fileChanged, [=](const QString path) {

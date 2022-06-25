@@ -1,5 +1,3 @@
-#include "selfdrive/ui/qt/widgets/opkr.h"
-
 #include <algorithm>
 #include <iterator>
 
@@ -12,12 +10,173 @@
 #include <QAction>
 #include <QMenu>
 #include <QDateTime>
+#include <QVBoxLayout>
 
 #include "selfdrive/common/params.h"
+
 #include "selfdrive/ui/qt/api.h"
+#include "selfdrive/ui/qt/offroad/settings.h"
 #include "selfdrive/ui/qt/widgets/input.h"
 
-#include "selfdrive/ui/ui.h"
+#include "selfdrive/ui/qt/widgets/opkr.h"
+
+
+CGitGroup::CGitGroup(void *p) : CGroupWidget( "Git Branch Change" ) 
+{
+   QVBoxLayout *pBoxLayout = CreateBoxLayout();
+
+
+
+  const char* git_reset = "/data/openpilot/selfdrive/assets/addon/script/git_reset.sh ''";
+  auto gitresetbtn = new ButtonControl("Git Reset", "RUN");
+  QObject::connect(gitresetbtn, &ButtonControl::clicked, [=]() {
+    if (ConfirmationDialog::confirm("Apply the latest commitment details of Remote Git after forced initialization of local changes. Do you want to proceed?", this)){
+      std::system(git_reset);
+    }
+  });
+
+
+  const char* gitpull_cancel = "/data/openpilot/selfdrive/assets/addon/script/gitpull_cancel.sh ''";
+  auto gitpullcanceltbtn = new ButtonControl("GitPull Restore", "RUN");
+  QObject::connect(gitpullcanceltbtn, &ButtonControl::clicked, [=]() {
+    std::system(gitpull_cancel);
+    GitPullCancel::confirm(this);
+  });
+
+
+
+
+  pBoxLayout->addWidget( new GitPullOnBootToggle() );
+  pBoxLayout->addWidget( gitresetbtn );
+  pBoxLayout->addWidget( gitpullcanceltbtn );
+
+  pBoxLayout->addWidget( new SwitchOpenpilot() ); // opkr
+  pBoxLayout->addWidget( new BranchSelectCombo() ); // opkr
+}
+
+CUtilWidget::CUtilWidget( void *p ) : CGroupWidget( "Util Program" ) 
+{
+   QVBoxLayout *pBoxLayout = CreateBoxLayout();
+
+   SoftwarePanel *parent = (SoftwarePanel*)p;
+
+  const char* panda_flashing = "/data/openpilot/selfdrive/assets/addon/script/panda_flashing.sh ''";
+  auto pandaflashingtbtn = new ButtonControl("Panda Flashing", "RUN");
+  QObject::connect(pandaflashingtbtn, &ButtonControl::clicked, [=]() {
+    if (ConfirmationDialog::confirm("Panda's green LED blinks quickly during panda flashing. Never turn off or disconnect the device arbitrarily. Do you want to proceed?", this)) {
+      std::system(panda_flashing);
+    }
+  });
+
+
+  const char* open_settings = "am start -a android.intent.action.MAIN -n com.android.settings/.Settings";
+  auto open_settings_btn = new ButtonControl("Open Android Settings", "RUN");
+  QObject::connect(open_settings_btn, &ButtonControl::clicked, [=]() {
+    emit parent->closeSettings();
+    std::system(open_settings);
+  });
+
+  const char* softkey = "am start com.gmd.hidesoftkeys/com.gmd.hidesoftkeys.MainActivity";
+  auto softkey_btn = new ButtonControl("SoftKey RUN/SET", "RUN");
+  QObject::connect(softkey_btn, &ButtonControl::clicked, [=]() {
+    emit parent->closeSettings();
+    std::system(softkey);
+  });
+
+  auto mixplorer_btn = new ButtonControl("RUN Mixplorer", "RUN");
+  QObject::connect(mixplorer_btn, &ButtonControl::clicked, [=]() {
+	  emit parent->closeSettings();
+    std::system("/data/openpilot/selfdrive/assets/addon/script/run_mixplorer.sh");
+  });
+
+  
+  pBoxLayout->addWidget( pandaflashingtbtn );
+  pBoxLayout->addWidget( open_settings_btn );
+  pBoxLayout->addWidget( softkey_btn );
+  pBoxLayout->addWidget( mixplorer_btn );  
+}
+
+CPresetWidget::CPresetWidget() : CGroupWidget( "Parameter Preset" ) 
+{
+  QVBoxLayout *pBoxLayout = CreateBoxLayout();
+/*
+  MenuControl *pMenu1 = new MenuControl( 
+    "OpkrMaxSteeringAngle",
+    "Driver to Steer Angle",
+    "mprove the edge between the driver and the openpilot.",
+    "../assets/offroad/icon_shell.png"    
+    );
+  pMenu1->SetControl( 10, 180, 5 );
+  m_pBoxLayout->addWidget( pMenu1 );
+*/
+  // preset1 buttons
+  QHBoxLayout *presetone_layout = new QHBoxLayout();
+  presetone_layout->setSpacing(50);
+
+  QPushButton *presetoneload_btn = new QPushButton("Load Preset1");
+  presetoneload_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
+  presetone_layout->addWidget(presetoneload_btn);
+  QObject::connect(presetoneload_btn, &QPushButton::clicked, [=]() {
+    if (ConfirmationDialog::confirm("Do you want to load Preset1?", this)) {
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/load_preset1.sh");
+    }
+  });
+
+  QPushButton *presetonesave_btn = new QPushButton("Save Preset1");
+  presetonesave_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
+  presetone_layout->addWidget(presetonesave_btn);
+  QObject::connect(presetonesave_btn, &QPushButton::clicked, [=]() {
+    if (ConfirmationDialog::confirm("Do you want to save Preset1?", this)) {
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/save_preset1.sh");
+    }
+  });
+
+  // preset2 buttons
+  QHBoxLayout *presettwo_layout = new QHBoxLayout();
+  presettwo_layout->setSpacing(50);
+
+  QPushButton *presettwoload_btn = new QPushButton("Load Preset2");
+  presettwoload_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
+  presettwo_layout->addWidget(presettwoload_btn);
+  QObject::connect(presettwoload_btn, &QPushButton::clicked, [=]() {
+    if (ConfirmationDialog::confirm("Do you want to load Preset2?", this)) {
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/load_preset2.sh");
+    }
+  });
+
+  QPushButton *presettwosave_btn = new QPushButton("Save Preset2");
+  presettwosave_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
+  presettwo_layout->addWidget(presettwosave_btn);
+  QObject::connect(presettwosave_btn, &QPushButton::clicked, [=]() {
+    if (ConfirmationDialog::confirm("Do you want to save Preset2?", this)) {
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/save_preset2.sh");
+    }
+  });
+
+  auto paraminit_btn = new ButtonControl("Parameters Init", "RUN");
+  QObject::connect(paraminit_btn, &ButtonControl::clicked, [=]() {
+    if (ConfirmationDialog::confirm("Initialize parameters. Changes in the EON menu are changed to the initial set value. Do you want to proceed?", this)){
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/init_param.sh");
+    }
+  });
+
+  pBoxLayout->addLayout( presetone_layout );
+  pBoxLayout->addLayout( presettwo_layout );
+  pBoxLayout->addWidget( paraminit_btn );
+
+
+  main_layout->addStretch();
+  refresh();
+}
+
+void CPresetWidget::refresh( int nID )
+{
+  CGroupWidget::refresh( nID );
+
+  
+}
+
+
 
 SwitchOpenpilot::SwitchOpenpilot() : ButtonControl("Change Repo/Branch", "", "Change to another open pilot code. You can change it by entering ID/repository/branch.") {
   QObject::connect(this, &ButtonControl::clicked, [=]() {

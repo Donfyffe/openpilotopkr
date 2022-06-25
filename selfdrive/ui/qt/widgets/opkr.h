@@ -4,13 +4,49 @@
 #include <QLineEdit>
 #include <QSoundEffect>
 
-#include "selfdrive/hardware/hw.h"
-#include "selfdrive/ui/qt/widgets/controls.h"
-#include "selfdrive/ui/ui.h"
+
 #include <QComboBox>
 #include <QAbstractItemView>
 #include <QMessageBox>
 #include <QProcess>
+
+#include "selfdrive/hardware/hw.h"
+#include "selfdrive/ui/qt/widgets/controls.h"
+#include "selfdrive/ui/qt/widgets/groupWidget.h"
+#include "selfdrive/ui/ui.h"
+
+class CGitGroup : public CGroupWidget 
+{
+  Q_OBJECT
+
+public:
+  explicit CGitGroup( void *parent=0);
+};
+
+
+class CUtilWidget : public CGroupWidget 
+{
+  Q_OBJECT
+
+public:
+  explicit CUtilWidget( void *parent );
+};
+
+
+class CPresetWidget : public CGroupWidget 
+{
+  Q_OBJECT
+
+public:
+  explicit CPresetWidget();
+
+public slots:  
+  virtual void refresh(int nID = 0);
+
+  
+};
+
+
 
 class SwitchOpenpilot : public ButtonControl {
   Q_OBJECT
