@@ -601,20 +601,8 @@ DeveloperPanel::DeveloperPanel(QWidget *parent) : QFrame(parent) {
   layout->addWidget(horizontal_line());
   layout->addWidget(new CarSelectCombo());
 
-  layout->addWidget(horizontal_line());
-  layout->addWidget(new LabelControl("〓〓〓〓〓〓〓【 Panda Values 】〓〓〓〓〓〓〓", ""));
-  layout->addWidget(new MaxSteer());
-  layout->addWidget(new MaxRTDelta());
-  layout->addWidget(new MaxRateUp());
-  layout->addWidget(new MaxRateDown());
-  const char* p_edit_go = "/data/openpilot/selfdrive/assets/addon/script/p_edit.sh ''";
-  auto peditbtn = new ButtonControl("Change Panda Values", "RUN");
-  QObject::connect(peditbtn, &ButtonControl::clicked, [=]() {
-    if (ConfirmationDialog::confirm("Apply the changed panda value. Do you want to proceed? It automatically reboots.", this)){
-      std::system(p_edit_go);
-    }
-  });
-  layout->addWidget(peditbtn);
+  layout->addWidget(new CPandaGroup());
+
 }
 
 TuningPanel::TuningPanel(QWidget *parent) : QFrame(parent) {
@@ -627,91 +615,40 @@ TuningPanel::TuningPanel(QWidget *parent) : QFrame(parent) {
   layout->addWidget(new LabelControl("〓〓〓〓〓〓〓〓【 TUNING 】〓〓〓〓〓〓〓〓", ""));
   layout->addWidget(new CameraOffset());
   layout->addWidget(new PathOffset());
+  layout->addWidget(horizontal_line());
+
+  layout->addWidget(new SteerActuatorDelay());
+  layout->addWidget(new SteerRateCost());
+  layout->addWidget(new TireStiffnessFactor());
+  layout->addWidget(new SteerThreshold());
+  layout->addWidget(new SteerLimitTimer());
+
   layout->addWidget(new LiveSteerRatioToggle());
   layout->addWidget(new LiveSRPercent());
   layout->addWidget(new SRBaseControl());
   layout->addWidget(new SRMaxControl());
-  layout->addWidget(new SteerActuatorDelay());
-  layout->addWidget(new SteerRateCost());
-  layout->addWidget(new SteerLimitTimer());
-  layout->addWidget(new TireStiffnessFactor());
+
+  layout->addWidget(horizontal_line());
   layout->addWidget(new VariableSteerMaxToggle());
   layout->addWidget(new SteerMax());
   layout->addWidget(new VariableSteerDeltaToggle());
   layout->addWidget(new SteerDeltaUp());
   layout->addWidget(new SteerDeltaDown());
+
+  layout->addWidget(horizontal_line());
   layout->addWidget(new ToAvoidLKASFaultBeyondToggle());
-  layout->addWidget(new SteerThreshold());
   layout->addWidget(new DesiredCurvatureLimit());
 
   layout->addWidget(horizontal_line());
 
-  layout->addWidget(new LabelControl("〓〓〓〓〓〓〓〓【 CONTROL 】〓〓〓〓〓〓〓〓", ""));
-  layout->addWidget(new LateralControl());
+  //layout->addWidget(new LabelControl("〓〓〓〓〓〓〓〓【 CONTROL 】〓〓〓〓〓〓〓〓", ""));
+ // layout->addWidget(new LateralControl());
   layout->addWidget(new LiveTunePanelToggle());
-  QString lat_control = QString::fromStdString(Params().get("LateralControlMethod", false));
-  if (lat_control == "0") {
-    layout->addWidget(new PidKp());
-    layout->addWidget(new PidKi());
-    layout->addWidget(new PidKd());
-    layout->addWidget(new PidKf());
-  } else if (lat_control == "1") {
-    layout->addWidget(new InnerLoopGain());
-    layout->addWidget(new OuterLoopGain());
-    layout->addWidget(new TimeConstant());
-    layout->addWidget(new ActuatorEffectiveness());
-  } else if (lat_control == "2") {
-    layout->addWidget(new Scale());
-    layout->addWidget(new LqrKi());
-    layout->addWidget(new DcGain());
-  } else if (lat_control == "3") {
-    layout->addWidget(new TorqueMaxLatAccel());
-    layout->addWidget(new TorqueKp());
-    layout->addWidget(new TorqueKf());
-    layout->addWidget(new TorqueKi());
-    layout->addWidget(new TorqueFriction());
-    layout->addWidget(new TorqueUseAngle());
-    layout->addWidget(new TorqueAngDeadZone());
-  } else if (lat_control == "4") {
-    layout->addWidget(new MultipleLatSelect());
-    layout->addWidget(new MultipleLateralSpeed());
-    layout->addWidget(new MultipleLateralAngle());
-    layout->addWidget(new TorqueMaxLatAccel());
-    layout->addWidget(new TorqueKp());
-    layout->addWidget(new TorqueKf());
-    layout->addWidget(new TorqueKi());
-    layout->addWidget(new TorqueFriction());
-    layout->addWidget(new TorqueUseAngle());
-    layout->addWidget(new TorqueAngDeadZone());
-    layout->addWidget(new Scale());
-    layout->addWidget(new LqrKi());
-    layout->addWidget(new DcGain());
-    layout->addWidget(new InnerLoopGain());
-    layout->addWidget(new OuterLoopGain());
-    layout->addWidget(new TimeConstant());
-    layout->addWidget(new ActuatorEffectiveness());
-    layout->addWidget(new PidKp());
-    layout->addWidget(new PidKi());
-    layout->addWidget(new PidKd());
-    layout->addWidget(new PidKf());
-  }
 
+  layout->addWidget(new CLateralControlGroup());
   layout->addWidget(horizontal_line());
+  layout->addWidget(new CLongControlGroup());
 
-  layout->addWidget(new LabelControl("〓〓〓〓〓〓〓【 LONGCONTROL 】〓〓〓〓〓〓〓", ""));
-  layout->addWidget(new CustomTRToggle());
-  layout->addWidget(new CruiseGapTR());
-  layout->addWidget(new DynamicTRGap());
-  layout->addWidget(new DynamicTRUD());
-  layout->addWidget(new DynamicTRBySpeed());
-  layout->addWidget(new RadarLongHelperOption());
-  layout->addWidget(new StoppingDistAdjToggle());
-  layout->addWidget(new StoppingDist());
-  layout->addWidget(new E2ELongToggle());
-  layout->addWidget(new StopAtStopSignToggle());
-  layout->addWidget(new StockDecelonCamToggle());
-  //layout->addWidget(new RadarDisableToggle());
-  //layout->addWidget(new UseRadarTrackToggle());
 }
 
 void SettingsWindow::showEvent(QShowEvent *event) {
