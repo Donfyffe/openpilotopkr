@@ -95,10 +95,14 @@ class DesireHelper:
 
     if carstate.leftBlinker:
       self.lane_change_direction = LaneChangeDirection.left
+      lane_direction = -1
     elif carstate.rightBlinker:
       self.lane_change_direction = LaneChangeDirection.right
+      lane_direction = 1
+    else:
+      lane_direction = 2
 
-    if self.lane_change_state == LaneChangeState.off and road_edge_stat in (1, -1):
+    if self.lane_change_state == LaneChangeState.off and road_edge_stat == lane_direction:
       self.lane_change_direction = LaneChangeDirection.none
     elif (not controlstate.active) or (self.lane_change_timer > LANE_CHANGE_TIME_MAX) or (abs(self.output_scale) >= 0.8 and self.lane_change_timer > 1):
       self.lane_change_state = LaneChangeState.off
