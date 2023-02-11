@@ -151,7 +151,7 @@ Setting Menu
       - OPKR (locallized in Korea) <br />
         **if you want to use your own, Edit the file with yours(/data/params/d/MapboxStyleCustom). <br />
         **You can make your mapbox style at https://studio.mapbox.com/. (If you publish the style you can use it.)
-   - **Use GoogleMap For Mapbox:** use Google Map instead of Mapbox
+   - **Use GoogleMap For Mapbox:** Use google map when you search your destination at a web browser.
    - **Bottom Text View:** Show Date/Time/Roadname at bottom of drive screen.
    - **RPM Animation:** Show RPMs on UI with adjustable limit.
    - **AnimatedRPM Max:** max hundreds scale for animated rpm meter.
@@ -234,18 +234,16 @@ Setting Menu
    - **Ignore of Steering Warning:** Some cars have Steerwarning, so that not engaged.
    - **Ignore Can Error on ISG:** for ISG cars. In order to ignore can error, if you want to prevent disengagement.
    - **Enable FCA11 Message:** For some newer vechicle
-   - **Steer Wind Down :**
-   - **MainSwitch Openpilot On/Off:**
-   - **StockLKAS Enable at disengagement:**
-   - **C2 with CommaPower:**
-   - **Use GoogleMap for Mapbox:** Use google map when you search your destination at a web browser.
+   - **User-Friendly Control (UFC) Mode:** Full time lateral control.
+   - **StockLKAS Enable at disengagement:** Use stock LKAS when op is disable.
+   - **C2 with CommaPower:** Enable if you are using C2
+   - **Joystick Debug Mode:** For debug Joystick testing.
+   - **No Smart MDPS:** If your car does not support steering down to 0 mph (no smartmdps harness).
+   - **FeatureNumber:** For user specific feature.
    - **Timezone setting:** (reboot required)
    - **Enable Calibration by Force:** developer for engagment test
-   - **Open Android Settings**
-   - **SoftKey RUN/SET:** softkey application
-   - **RUN Mixplorer:** file manager application
-   - **CAR Force Recognition:** If your car is not recognized, choose your car at this. (reboot required)
-   - **Panda Value Edit:** not recommended. enough at current status. (reboot required)
+   - **CAR Type:** If your car is not recognized, choose your car at this. (reboot required)
+   - Panda Value - :** default setting is good for most user. (reboot required)
       - MaxSteer
       - RTDelta
       - MaxRateUp
@@ -254,37 +252,44 @@ Setting Menu
  - `Tuning Menu` (**Function Name:** Description)
    - **CameraOffset:** set your camera offset
    - **PathOffset:** i'm not sure this. but i recommend if you move your camera offset, adjust this as the value.
+   - **SteerActuatorDelay:** level how your car reacts to upcoming road curvature.
    - **Use Live SteerRatio:** Use Live Parameter value.
-   - **LiveSR Adjsut(%):** in some cases, live parameter is higher than original steeratio, i set this to minus value to not steer aggressively.
+   - **TireStiffnessFactor:** lower value makes your steer more aggressive.
+   - **SteerThreshold:** driver steering torque threshold.
+   - **SteerLimitTimer:** timer how long op hold the steer. and timer for alert.
+   - **Use LiveSteer Ratio:**
+   - **LiveSR Adjust(%):** in some cases, live parameter is higher than original steeratio, i set this to minus value to not steer aggressively.
    - **SteerRatio:** Your default SteerRatio
    - **SteerRatioMax:** Max SteerRatio if you use Varaible SteerRatio not Live SR.
-   - **SteerActuatorDelay:** level how your car reacts to upcoming road curvature.
-   - **SteerRateCost:** How your car make steer strong to turn with the road curvature. you want make it strong lower the value. too much low values, it will make the steering little unstable.
-   - **SteerLimitTimer:** timer how long op hold the steer. and timer for alert.
-   - **TireStiffnessFactor:** lower value makes your steer more aggressive.
-   - **SteerMaxDefault:** SteerMax Default value
-   - **SteerMaxMax:** SteerMax Max value if you use variable SteerMax.
+   - **SteerRateCost:** How your car make steer strong to turn with the road curvature. you want make it strong lower the value. too low values, it will make the steering little unstable.
+   - **SteerMax/Variable Steermax Toggle:**
+   - **SM Base SM Max:** SteerMax Base and Max value if you use variable SteerMax.
    - **SteerMaxV:** multiply to the output scale. it effects steer saturation or others.
-   - **Use variable SteerMax:** use variable steermax by road curvature. it works above 30km/h.
-   - **SteerDeltaUpDefault:** how fast steer inside in certain timing scope.
-   - **SteerDeltaUpMax:** max value if you use variable steerdelta
-   - **SteerDeltaDownDefault:** how fast steer outside in certain timing scope.
+   - **DeltaUpDown/Variable Deta Toggle** Use single Delta or Variable Delta, how fast steer outside in certain timing scope.
+   - **DtUpBase:DtUpMax** Delta Up base / max value if you use variable steerdelta.
+   - **DtDnBase:DtDnMax** Delta Down base / max value if you use variable steerdelta.
    - **SteerDeltaDownMax:** max value if you use variable steerdelta
-   - **Use variable SteerDelta:** use variable steerdelta by road curvature. it works above 30km/h.
-   - **SteerThreshold:** driver steering torque threshold
-   - **LatControl:** (reboot required)
+   - **To Avoid LKAS Fault with More Steer:** more curve steer.
+   - **DisiredCurvatureLimit:**
+   - **Use LiveTune and Show UI:** this will show button on the screen, you can up/down the values of tune. it will be applied in realtime. you can also touch top-right corner(comma wheel icon) to show tune panel on the screen.
+   - `LatControl(Reboot)`** Choose lateral control mode**
       - PID
       - INDI
-      - LQR
       - Torque
-   - **Use LiveTune and Show UI:** this will show button on the screen, you can up/down the values of tune. it will be applied in realtime. you can also touch top-right corner(comma wheel icon) to show tune panel on the screen.
-   - **Tune Values:** change and find appropriate values.
-   - `LONG CONTROL MENU` **(RadarHareness required)**
-      - **Use DynamicTR:** TR changed by car speed.
+      - LQR
+      - Multi
+
+   - `LONG CONTROL` **(RadarHareness required)**
+      - **Custom TR Enable:**
       - **CruiseGap:** set TR of other Cruise Gaps
-      - **Use Radar Long Assist:** when your car approaches to lead car, use combined value both OP gas/brake and Radar one.
+      - **Use DynamicTR:** TR changed by car speed.
+      - **Dynamic:TR[Speed][TR
+      - **Long Mode:** when your car approaches to lead car, use combined value both OP gas/brake and Radar one.
       - **Adjust Stopping Distance:** help stopping distance more close to lead car(not recommended)
+      - **Stopping Distance(m):**
       - **Enable E2E Long:** Use Comma E2E long, sometimes it is not comfortable. think it's earlier to release.
+      - **Stop At Stop Sign:**
+      - **Use Stock Decel on SafetySection:**
 
 Special Thanks
 ================
