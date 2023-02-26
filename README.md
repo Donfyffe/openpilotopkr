@@ -40,18 +40,16 @@ Main Features
  - Auto Recognition of SCC bus on CAN 2 for long control.
  - Variable color speed display, braking shades of red, acceleration shades of green, coasting (no brake, no gas) white.
  - OSM / Waze integration for auto SCC speed adjust via button spamming with custom speed offset UI.
- - Slow down for curve using Model, OSM or both with custom speed based on the CV (curve vector / angle of curve) in UI.
- - 2 Users presets for easy paramater saving and restore.
+ - Slow down for curve using Model, OSM or both with custom speed based on the CV (curve vector (angle of curve)) in UI.
+ - 2 Users presets for easy parameter saving and restore.
  - Auto lane mode selection (laneless or lanefull).
  - Multi-lateral control with auto lateral mode change based on speed or curve.
  - Auto gap adjust based on speed.
  - No ssh knowledge required, as most paramater can be adjusted via UI.
  - Always updated and current.
-
-User-Friendly Control Mode(UFC)
- - Full time lateral control
- - Auto Resume while Driving
- - Seperate Lateral / Long control
+ - User-Friendly Control Mode (UFC) Full time lateral control.
+ - Auto SCC resume option.
+ - Independent Lateral (steering) / Longitudinal (gas, brake) control.
 
 Branch Definitions
 ====================
