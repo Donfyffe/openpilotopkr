@@ -133,8 +133,8 @@ Setting Menu
       - Mappy (Korea)
       - iNavi (Korea)
       - Waze (Global)
-      - TMapE (Korea, use TMap on external device, to free up system resource on device)
-      - WazeE (Global, use Waze on external device, to free up system resource on device)
+      - TMapE (Korea, use TMap on external rooted device, to free up system resource on EON / C2 device)
+      - WazeE (Global, use Waze on external rooted device, to free up system resource on EON / C2 device)
    - **ExternalDevIP:** IP address of external navi device that OPKR will retrieve traffic info from, must be sharing same netork with internet access.
    - **RUN Navigation on Boot:** Run your above selected navi app on boot. If it runs well, will go to background after few seconds.
    - **API Server:** Choose driver log server
@@ -153,7 +153,7 @@ Setting Menu
    - **Bottom Text View:** Show Date/Time/Roadname at bottom of drive screen.
    - **RPM Animation:** Show RPMs on UI with adjustable limit.
    - **AnimatedRPM Max:** max hundreds scale for animated rpm meter.
-   - **Show Stop Line:** show stop line and stop signal, needed for opkr long control stop at stop signal feature (expermental).
+   - **Show Stop Line:** show stop line and stop signal, needed for opkr long control stop at stop signal feature (experimental).
    - **Hold Button for Setting Menu:** if active you wiil have to hold button to access setting menu, to prevent unwanted access.
    - **Enable RTShield Process:** enhancement for smoother op operation.
    - **Offline OSM (64G storage only):** OSM Korea only, device storage memory must be >= 64G.
@@ -166,7 +166,7 @@ Setting Menu
    - **Standstill Resume Alternative:** Some model like DH Genesis need this for Auto Resume at Stop.
    - **Depart Chime At Resume:** work with show stop line, will play chime when light change to green or lead car start moving.
    - **Use Cruise Button Spamming:** SCC set speed is changed up and down automatically. turn on to use many functions related to auto speed control.
-   - **Button Spamming Level:** set how aggresive buttom spamming is adjusted, 0 - 16. (this affects acceleration & deceleration with speed limit change).
+   - **Button Spamming Level:** set how aggresive button spamming is adjusted, 0 - 16. (this affects acceleration & deceleration with speed limit change).
    - **CruiseSet With RoadLimitSpeed:** set SCC max speed based on road speed limit, independent of OPKR Navi/OSM info.
    - **Cruiseset RoadLimitSpd Ofs:** speed offset for above RoadLimitSpeed.  
    - **Cruise Start Mode:** Set your custom Cruise mode when boot. There are 6 modes. (OpenpilotStock/Dist+Curv/Dist/Curv/Oneway/CamSpeed) 
@@ -191,11 +191,11 @@ Setting Menu
    - **Enable OSM:** use OSM feature
    - **Enable OSM SpeedLimit:** Use OSM SpeedLimit, active internet required. (reboot required).
    - **Use Stock SafetyCAM Speed:** Some cars have the signal in CAN message. not for all HKG cars.
-   - **SpeedLimit Offset:** Use to set scc max speed above or below the navi / CAN reported speed. This can be % speed amount + / - or "c" for custom settings.
+   - **SpeedLimit Offset:** Use to set scc max speed above or below the navi / CAN reported speed. This can be %, +/-, "C" or "D" for speed limit offset settings. (Use "C" for custom speed offset, use "D" for waze police alert + /- speed offset in combination with custom speed offset, set your police alert speed offset using +/- and set custom speed offset using CustomSpeedlimit([SL],[Target Speed])).
    - **CustomSpeedlimit([SL],[Target Speed]):** For custom offset speed SL is speed Limt & Target Speeds the offset limit.
    - **SafetyCam SignType:** You can select 2 options to show on the screen
-      - Circular: (EU) type of speedlimit sign.
-      - Retangular: (US) type of speedlimit sign.
+      - Circular: (EU) round type speedlimit sign.
+      - Retangular: (US) rectangle type speedlimit sign.
    - **SafetyCamDist Adj(%):** Change the target distance if you are in the decel situation of speed limit or safetycam.
    - **Curve Decel Option :** Which curve decel you want to use,  Vision / OSM.
    - **VisionCurvDecel([CV],[Target Speed]):** set speed is changed by Curve Vector and Target Speed.
