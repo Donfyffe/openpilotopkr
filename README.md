@@ -39,17 +39,17 @@ Main Features
  - SmartMDPS support for steering down to 0 mph.
  - Auto Recognition of SCC bus on CAN 2 for long control.
  - Variable color speed display, braking shades of red, acceleration shades of green, coasting (no brake, no gas) white.
- - OSM integration for auto SCC speed adjust via button spamming and slow down on curve using custom UI settings.
- - 2 Users presets.
+ - OSM / Waze integration for auto SCC speed adjust via button spamming with custom speed offset UI.
+ - Slow down for curve using Model, OSM or both with custom speed based on the CV (curve vector (angle of curve)) in UI.
+ - 2 Users presets for easy parameter saving and restore.
  - Auto lane mode selection (laneless or lanefull).
- - Multi-lateral control
+ - Multi-lateral control with auto lateral mode change based on speed or curve.
+ - Auto gap adjust based on speed.
  - No ssh knowledge required, as most paramater can be adjusted via UI.
  - Always updated and current.
-
-User-Friendly Control Mode(UFC)
- - Full time lateral control
- - Auto Resume while Driving
- - Seperate Lat/StockLong - To be Developed
+ - User-Friendly Control Mode (UFC) Full time lateral control.
+ - Auto SCC resume option.
+ - Independent Lateral (steering) / Longitudinal (gas, brake) control.
 
 Branch Definitions
 ====================
@@ -85,21 +85,28 @@ Setting Menu
  - `Software` (**Function Name:** Description)
    - **Check for Updates:** You can confirm new commits of your fork, press ok will update and reboot.(like git pull).
    - **Commit(Local/Remote):** Commit name of local(EON) and Remote.(run once when boot in manager.py, search gitcommit.sh at the file, internet connection required)
-   - **Git Pull On Boot:** run 'git pull' command when boot.
-   - **Load Preset/Save Preset:** Load your Parameters or Save Your Parameters. located /data/preset1 or /data/preset2. This function can save/load your settings)
+   - Parameter Preset -
+   - **Load Preset/Save Preset:** Load or Save Your Parameters. stored in /data/preset1 or /data/preset2. This function will save/load your    parameter settings.
    - **Parameter Init:** Remove your settings changes and restore initial values.
+   - Git Branch Change -
+   - **Git Pull On Boot:** Check for updates and update fork every boot.
+   - **Change Repo/Branch:** You can install others fork by typing Git ID, Git Repository, Git Branch or change OPKR branch by pressing the reload button then select branch from dropdown box, device will reboot to selected branch.
    - **Git Reset:** Remove your local changes and inintalize to the original status of the branch.
-   - **Cancel Git Pull:** Move back to previous version of fork if last update is not desired.
-   - **Panda Flashing:** Run Panda flashing command manually. Basically this is not necessary on normal operation.
-   - **Change Repo/Branch:** You can install others fork/branch thru typing Git ID, Git Repository, Git Branch.
-
- - `UI Menu` (**Function Name:** Description)
-   - **EON AutoShutdown:** When car ignition is turned off, the device will be shutdown after the set time.
+   - **GitPull Restore :** Go back to previous version of fork if last update is not desired. (please note if you make special changes to OPKR fork, you will loose them if you use GitPull Restore).
+   - Util Program-
+   - **Panda Flashing (Old) :** Run Panda flashing command manually on pre Neos 18. Basically this is not necessary on normal operation.
+   - **Panda Flashing (New) :** Run Panda flashing command manually on post Neos 18. Basically this is not necessary on normal operation.
+   - **Remove Dash Err On Boot :** Use this to prevent dashboard alarms during boot, only required for some HKG models with C2.
+   - **Open Android Settings :** This will go to device setting to access APN etc settings.
+   - **SoftKey Run/Set :** Softkey is a utility app to make custom soft key on OPKR driver screen.
+   - **Run Mixplorer :** Mixplorer is a versatile file manager app.
+   - `UI Menu` (**Function Name:** Description)
    - **EON ForceShutdown:** The device will be shutdown by force at offroad status after set time.
    - **EON Volume Control(%):** set device volume manually.
    - **EON Brightness Control(%):** set device brightness automatically or manually.
    - **EON SCR Off Timer:** The Brightness at SCR Off(%) will be in effect after set time when driving.
    - **Brightness at SCR Off(%):** Work with (EON SCR Off Timer) setting, set screen brightness level %.
+   - **DoNotDisturb Mode :** Dont wake the baby, not seen, not heard.
    - **EON Detach Alert Sound:** Will play alert sound when your car ignition is turned off. (Can be used as a reminder to remove device from mount to protect from sun, theft, etc.)
       - None
       - Korean
@@ -123,50 +130,60 @@ Setting Menu
    - **Normal EYE Threshold:** set the value below threshold of your face recognition.
    - **Blink Threshold:** For Driver Monitoring. Set the value below the threshold of your eyes blink recognition. Driver Monitoring camera shows the values of your face recognition, eyes and the other things. Preview 'Driver Camera' and then check the recognition value of your eye blink to modify the value on menu.
    - **Navigation Select:** 
-      - iNavi (Korea)
       - Mappy (Korea)
+      - iNavi (Korea)
       - Waze (Global)
-   - **RUN Navigation on Boot:** Run your selected iNavi, Mappy or Waze on boot. If it runs well, will go to background after few seconds.
-   - **Display Date on Screen:** shows the device date
-   - **Display Time on Screen:** shows the device time
+      - TMapE (Korea, use TMap on external rooted device, to free up system resource on EON / C2 device)
+      - WazeE (Global, use Waze on external rooted device, to free up system resource on EON / C2 device)
+   - **ExternalDevIP:** IP address of external navi device that OPKR will retrieve traffic info from, must be sharing same netork with internet access.
+   - **RUN Navigation on Boot:** Run your above selected navi app on boot. If it runs well, will go to background after few seconds.
    - **API Server:** Choose driver log server
       - OPKR
       - Comma
       - User's
    - **User's API:** Set User driver log server url.
+   - **Enable Mapbox
    - **Mapbox Style:** Choose from three styles
       - Mapbox
       - Comma
       - OPKR (locallized in Korea) <br />
         **if you want to use your own, Edit the file with yours(/data/params/d/MapboxStyleCustom). <br />
         **You can make your mapbox style at https://studio.mapbox.com/. (If you publish the style you can use it.)
-   - **Top Text View:** Show Date/Time/Roadname at top of drive screen.
-   - **RPM Animation** Show RPMs on UI with adjustable limit
-   - **Show Stop Line**
-   - **Enable RTShield Process**
-   - **Offline OSM** (Korea only)(64G storage only) 
+   - **Use GoogleMap For Mapbox:** Use google map when you search your destination at a web browser.
+   - **Bottom Text View:** Show Date/Time/Roadname at bottom of drive screen.
+   - **RPM Animation:** Show RPMs on UI with adjustable limit.
+   - **AnimatedRPM Max:** max hundreds scale for animated rpm meter.
+   - **Show Stop Line:** show stop line and stop signal, needed for opkr long control stop at stop signal feature (experimental).
+   - **Hold Button for Setting Menu:** if active you wiil have to hold button to access setting menu, to prevent unwanted access.
+   - **Enable RTShield Process:** enhancement for smoother op operation.
+   - **Offline OSM (64G storage only):** OSM Korea only, device storage memory must be >= 64G.
 
  - `Driving Menu` (**Function Name:** Description)
    - **Use Auto Resume at Stop:** after standstill, op will auto resume when leadcar start moving.
    - **RES count at standstill:** some model need to be adjusted so car move when lead car start moving.(reboot required)
    - **Change Cruise Gap at Stop:** Cruise Gap changed to 1 step for departure faster, it gets back to orignal Gap after few second.
-   - **Standstill Resume Alternative:** Some model need this for Auto Resume at Stop.
+   - **Cruise Gap Change By Speed:** set your preferred following gap 1 - 4 automatically based on speed.
+   - **Standstill Resume Alternative:** Some model like DH Genesis need this for Auto Resume at Stop.
+   - **Depart Chime At Resume:** work with show stop line, will play chime when light change to green or lead car start moving.
    - **Use Cruise Button Spamming:** SCC set speed is changed up and down automatically. turn on to use many functions related to auto speed control.
+   - **Button Spamming Level:** set how aggresive button spamming is adjusted, 0 - 16. (this affects acceleration & deceleration with speed limit change).
+   - **CruiseSet With RoadLimitSpeed:** set SCC max speed based on road speed limit, independent of OPKR Navi/OSM info.
+   - **Cruiseset RoadLimitSpd Ofs:** speed offset for above RoadLimitSpeed.  
    - **Cruise Start Mode:** Set your custom Cruise mode when boot. There are 6 modes. (OpenpilotStock/Dist+Curv/Dist/Curv/Oneway/CamSpeed) 
-      - OpenpilotStock: Scc button will set scc speed, will work like stock button to set op. 
+      - OpStock: Scc button will set scc speed, will work like stock button to set op. 
       - Dist+Curv: changed by distance to leadcar and curvature. 
       - Dist: distance only. 
-      - Curv: curvature only. 
+      - Curvonly: curvature only. 
       - Oneway: change camera offset to approach the edge of a road. 
-      - CamSpeed: is changing set speed only by value of speed sign (OSM, iNavi, Mappy).
-   - **LaneChange Speed:** minimum lane change speed
+      - CamOnly: is changing set speed only by value of speed sign (OSM, iNavi, Mappy).
+   - **LaneChange On/Off/Spd:** minimum lane change speed.
    - **LaneChange Delay:** adjust delay time before lane change
       - Nudge/Nudgeless/Set Seconds
-   - **LaneChange Time(km/h: value):** How quick should lane change be completed, faster, increase the value, decrease for slower.
+   - **LaneChange Time(km/h: value):** How quick should lane change be completed, increase for faster, decrease for slower.
    - **LeftCurv Offset:** if you are not satisfy with Left Curve Section, this can move your car to left or right side.(no reboot required)
    - **RightCurv Offset:** if you are not satisfy with Right Curve Section, this can move your car to left or right side.(no reboot required)
    - **Show BSM Status:** Show when a car is in blindspot. need car BSM function.
-   - **Steer Control Method** Choose between normal and smooth.
+   - Steer Control Method** Choose between normal and smooth.
    - **Max Steering Angle:** Default is 90. If you want more, increase this. Some car will not accept value above 90.
    - **Str Angle Adjust:** To keep car on a straight road, If the value of steering angle is not 0.0, adjust this to be 0.0
    - **Stop Steer Assist on Turn Signals:** Openpilot doesn't steer your car when turn signal is active.
@@ -174,15 +191,17 @@ Setting Menu
    - **Enable OSM:** use OSM feature
    - **Enable OSM SpeedLimit:** Use OSM SpeedLimit, active internet required. (reboot required).
    - **Use Stock SafetyCAM Speed:** Some cars have the signal in CAN message. not for all HKG cars.
-   - **SpeedLimit Offset (%, +- or C):** Use to set scc speed above or below the OSM or Stock can reported speed. This can be % Speed amount + / -  
-   - **OSMCustomSpeedlimit([SL],[Target Speed]):** (Set SpeedLimit Offset to C) set custom OSM speed offset SL & Target Speeds.
+   - **SpeedLimit Offset:** Use to set scc max speed above or below the navi / CAN reported speed. This can be %, +/-, "C" or "D" for speed limit offset settings. (Use "C" for custom speed offset, use "D" for waze police alert + /- speed offset in combination with custom speed offset, set your police alert speed offset using +/- and set custom speed offset using CustomSpeedlimit([SL],[Target Speed])).
+   - **CustomSpeedlimit([SL],[Target Speed]):** For custom offset speed SL is speed Limt & Target Speeds the offset limit.
    - **SafetyCam SignType:** You can select 2 options to show on the screen
-      - Circular: (EU) type of speedlimit sign.
-      - Retangular: (US) type of speedlimit sign.
+      - Circular: (EU) round type speedlimit sign.
+      - Retangular: (US) rectangle type speedlimit sign.
    - **SafetyCamDist Adj(%):** Change the target distance if you are in the decel situation of speed limit or safetycam.
    - **Curve Decel Option :** Which curve decel you want to use,  Vision / OSM.
    - **VisionCurvDecel([CV],[Target Speed]):** set speed is changed by Curve Vector and Target Speed.
    - **OSMCurvDecel([TSL],[Target Speed]):** If OSM has the value of curv, set your target speed.
+   - **SpeedBump Deceleration:** for Korea iNavi , not all navi app supply speed bump info.
+   - **Early Slowdown with Gap:** will use auto gap setting to assist in deceleration with lead car.
    - **Use Auto Engagement:** When OP is in disengagement status, Auto engagement is enabled when your car is moving. Cruise Standby status is needed at least.
    - **Auto Engage Speed(km/h):** Auto Engagement is enabled at this speed.
    - **Use Auto RES while Driving:** SCC speed automatically resume when brake is release or gas is applied.(reboot required)
@@ -193,8 +212,8 @@ Setting Menu
    - **Set LaneWidth:** Adjust if road lane is narrow
    - **Speed LaneWidth:** [Spd(m/s)], [Lanewidth] Adjust speed based on lane width.
    - **Routine Drive by Roadname:** (WIP) will change drive characteristics based on road, eg if local or highway will handle curve differently.
-   - **Driving Close to RoadEdge**
-   - **Avoid LKAS Fault**
+   - **Driving Close to RoadEdge** for driving on narrow single lane road.
+   - **To Avoid LKAS Fault** allow steer limit greater than 90 degree LKAS steering limit on HKG cars. Max Angle & Max Frame model dependent.
    - **Speed CameraOffset**
 
  - `Developer Menu` (**Function Name:** Description)
@@ -213,18 +232,16 @@ Setting Menu
    - **Ignore of Steering Warning:** Some cars have Steerwarning, so that not engaged.
    - **Ignore Can Error on ISG:** for ISG cars. In order to ignore can error, if you want to prevent disengagement.
    - **Enable FCA11 Message:** For some newer vechicle
-   - **Steer Wind Down :**
-   - **MainSwitch Openpilot On/Off:**
-   - **StockLKAS Enable at disengagement:**
-   - **C2 with CommaPower:**
-   - **Use GoogleMap for Mapbox:** Use google map when you search your destination at a web browser.
+   - **User-Friendly Control (UFC) Mode:** Full time lateral control.
+   - **StockLKAS Enable at disengagement:** Use stock LKAS when op is disable.
+   - **C2 with CommaPower:** Enable if you are using C2
+   - **Joystick Debug Mode:** For debug Joystick testing.
+   - **No Smart MDPS:** If your car does not support steering down to 0 mph (no smartmdps harness).
+   - **FeatureNumber:** For user specific feature.
    - **Timezone setting:** (reboot required)
    - **Enable Calibration by Force:** developer for engagment test
-   - **Open Android Settings**
-   - **SoftKey RUN/SET:** softkey application
-   - **RUN Mixplorer:** file manager application
-   - **CAR Force Recognition:** If your car is not recognized, choose your car at this. (reboot required)
-   - **Panda Value Edit:** not recommended. enough at current status. (reboot required)
+   - **CAR Type:** If your car is not recognized, choose your car at this. (reboot required)
+   - Panda Value - :** default setting is good for most user. (reboot required)
       - MaxSteer
       - RTDelta
       - MaxRateUp
@@ -233,37 +250,44 @@ Setting Menu
  - `Tuning Menu` (**Function Name:** Description)
    - **CameraOffset:** set your camera offset
    - **PathOffset:** i'm not sure this. but i recommend if you move your camera offset, adjust this as the value.
+   - **SteerActuatorDelay:** level how your car reacts to upcoming road curvature.
    - **Use Live SteerRatio:** Use Live Parameter value.
-   - **LiveSR Adjsut(%):** in some cases, live parameter is higher than original steeratio, i set this to minus value to not steer aggressively.
+   - **TireStiffnessFactor:** lower value makes your steer more aggressive.
+   - **SteerThreshold:** driver steering torque threshold.
+   - **SteerLimitTimer:** timer how long op hold the steer. and timer for alert.
+   - **Use LiveSteer Ratio:**
+   - **LiveSR Adjust(%):** in some cases, live parameter is higher than original steeratio, i set this to minus value to not steer aggressively.
    - **SteerRatio:** Your default SteerRatio
    - **SteerRatioMax:** Max SteerRatio if you use Varaible SteerRatio not Live SR.
-   - **SteerActuatorDelay:** level how your car reacts to upcoming road curvature.
-   - **SteerRateCost:** How your car make steer strong to turn with the road curvature. you want make it strong lower the value. too much low values, it will make the steering little unstable.
-   - **SteerLimitTimer:** timer how long op hold the steer. and timer for alert.
-   - **TireStiffnessFactor:** lower value makes your steer more aggressive.
-   - **SteerMaxDefault:** SteerMax Default value
-   - **SteerMaxMax:** SteerMax Max value if you use variable SteerMax.
+   - **SteerRateCost:** How your car make steer strong to turn with the road curvature. you want make it strong lower the value. too low values, it will make the steering little unstable.
+   - **SteerMax/Variable Steermax Toggle:**
+   - **SM Base SM Max:** SteerMax Base and Max value if you use variable SteerMax.
    - **SteerMaxV:** multiply to the output scale. it effects steer saturation or others.
-   - **Use variable SteerMax:** use variable steermax by road curvature. it works above 30km/h.
-   - **SteerDeltaUpDefault:** how fast steer inside in certain timing scope.
-   - **SteerDeltaUpMax:** max value if you use variable steerdelta
-   - **SteerDeltaDownDefault:** how fast steer outside in certain timing scope.
+   - **DeltaUpDown/Variable Deta Toggle** Use single Delta or Variable Delta, how fast steer outside in certain timing scope.
+   - **DtUpBase:DtUpMax** Delta Up base / max value if you use variable steerdelta.
+   - **DtDnBase:DtDnMax** Delta Down base / max value if you use variable steerdelta.
    - **SteerDeltaDownMax:** max value if you use variable steerdelta
-   - **Use variable SteerDelta:** use variable steerdelta by road curvature. it works above 30km/h.
-   - **SteerThreshold:** driver steering torque threshold
-   - **LatControl:** (reboot required)
+   - **To Avoid LKAS Fault with More Steer:** more curve steer.
+   - **DisiredCurvatureLimit:**
+   - **Use LiveTune and Show UI:** this will show button on the screen, you can up/down the values of tune. it will be applied in realtime. you can also touch top-right corner(comma wheel icon) to show tune panel on the screen.
+   - `LatControl(Reboot)`** Choose lateral control mode**
       - PID
       - INDI
-      - LQR
       - Torque
-   - **Use LiveTune and Show UI:** this will show button on the screen, you can up/down the values of tune. it will be applied in realtime. you can also touch top-right corner(comma wheel icon) to show tune panel on the screen.
-   - **Tune Values:** change and find appropriate values.
-   - `LONG CONTROL MENU` **(RadarHareness required)**
-      - **Use DynamicTR:** TR changed by car speed.
+      - LQR
+      - Multi
+
+   - `LONG CONTROL` **(RadarHareness required)**
+      - **Custom TR Enable:**
       - **CruiseGap:** set TR of other Cruise Gaps
-      - **Use Radar Long Assist:** when your car approaches to lead car, use combined value both OP gas/brake and Radar one.
+      - **Use DynamicTR:** TR changed by car speed.
+      - **Dynamic:TR[Speed][TR
+      - **Long Mode:** when your car approaches to lead car, use combined value both OP gas/brake and Radar one.
       - **Adjust Stopping Distance:** help stopping distance more close to lead car(not recommended)
+      - **Stopping Distance(m):**
       - **Enable E2E Long:** Use Comma E2E long, sometimes it is not comfortable. think it's earlier to release.
+      - **Stop At Stop Sign:**
+      - **Use Stock Decel on SafetySection:**
 
 Special Thanks
 ================
