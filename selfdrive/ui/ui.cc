@@ -244,7 +244,7 @@ static void update_state(UIState *s) {
     scene.engine_rpm = cs_data.getEngineRpm();
     scene.gear_step = cs_data.getGearStep();
     scene.charge_meter = cs_data.getChargeMeter();
-    if (sm.frame % (UI_FREQ/2) == 0 {
+    if (sm.frame % (UI_FREQ/2) == 0) {
       scene.steering_torque = cs_data.getSteeringTorque();
     }
   }
