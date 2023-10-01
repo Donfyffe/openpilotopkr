@@ -244,6 +244,9 @@ static void update_state(UIState *s) {
     scene.engine_rpm = cs_data.getEngineRpm();
     scene.gear_step = cs_data.getGearStep();
     scene.charge_meter = cs_data.getChargeMeter();
+    if (sm.frame % UI_FREQ == 0) {
+      scene.steering_torque = cs_data.getSteeringTorque();
+    }
   }
 
   if (sm.updated("liveParameters")) {
@@ -644,6 +647,7 @@ static void update_status(UIState *s) {
     s->scene.do_not_disturb_mode = std::stoi(params.get("DoNotDisturbMode"));
     s->scene.depart_chime_at_resume = params.getBool("DepartChimeAtResume");
     s->scene.OPKR_Debug = params.getBool("OPKRDebug");
+    s->scene.steer_max = std::stoi(params.get("SteerMaxAdj"));
 
     if (s->scene.autoScreenOff > 0) {
       s->scene.nTime = s->scene.autoScreenOff * 60 * UI_FREQ;
