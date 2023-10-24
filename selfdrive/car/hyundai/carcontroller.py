@@ -185,7 +185,7 @@ class CarController():
     self.enable_steer_more = self.params.get_bool("AvoidLKASFaultBeyond")
     self.no_mdps_mods = self.params.get_bool("NoSmartMDPS")
 
-    #self.user_specific_feature = int(self.params.get("UserSpecificFeature", encoding="utf8"))
+    self.user_specific_feature = int(self.params.get("UserSpecificFeature", encoding="utf8"))
 
     self.gap_by_spd_on = self.params.get_bool("CruiseGapBySpdOn")
     self.gap_by_spd_spd = list(map(int, Params().get("CruiseGapBySpdSpd", encoding="utf8").split(',')))
@@ -351,12 +351,12 @@ class CarController():
         lkas_active = c.active
       # disable when temp fault is active, or below LKA minimum speed
       elif self.opkr_maxanglelimit == 90:
-        lkas_active = c.active and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and CS.out.gearShifter == GearShifter.drive
+        lkas_active = c.active and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and (CS.out.gearShifter == GearShifter.drive or self.user_specific_feature == 11)
       elif self.opkr_maxanglelimit > 90:
         str_angle_limit = interp(CS.out.vEgo * CV.MS_TO_KPH, [0, 20], [self.opkr_maxanglelimit+60, self.opkr_maxanglelimit])
-        lkas_active = c.active and abs(CS.out.steeringAngleDeg) < str_angle_limit and CS.out.gearShifter == GearShifter.drive
+        lkas_active = c.active and abs(CS.out.steeringAngleDeg) < str_angle_limit and (CS.out.gearShifter == GearShifter.drive or self.user_specific_feature == 11)
       else:
-        lkas_active = c.active and CS.out.gearShifter == GearShifter.drive
+        lkas_active = c.active and (CS.out.gearShifter == GearShifter.drive or self.user_specific_feature == 11)
       if CS.mdps_error_cnt > self.to_avoid_lkas_fault_max_frame:
         self.cut_steer = True
       elif self.cut_steer_frames > 1:
@@ -420,7 +420,7 @@ class CarController():
 
     clu11_speed = CS.clu11["CF_Clu_Vanz"]
     enabled_speed = 38 if CS.is_set_speed_in_mph else 60
-    if clu11_speed > enabled_speed or not lkas_active or CS.out.gearShifter != GearShifter.drive:
+    if clu11_speed > enabled_speed or not lkas_active:
       enabled_speed = clu11_speed
 
     if CS.cruise_active: # to toggle lkas, hold gap button for 1 sec
@@ -845,7 +845,7 @@ class CarController():
     t_speed = 20 if CS.is_set_speed_in_mph else 30
     if self.auto_res_timer > 0:
       self.auto_res_timer -= 1
-    elif self.model_speed > 95 and self.cancel_counter == 0 and not CS.cruise_active and not CS.out.brakeLights and round(CS.VSetDis) >= t_speed and \
+    elif self.model_speed > (60 if CS.is_set_speed_in_mph else 95) and self.cancel_counter == 0 and not CS.cruise_active and not CS.out.brakeLights and round(CS.VSetDis) >= t_speed and \
      (1 < CS.lead_distance < 149 or round(CS.clu_Vanz) > t_speed) and round(CS.clu_Vanz) >= 3 and self.cruise_init and \
      self.opkr_cruise_auto_res and opkr_cruise_auto_res_condition and (self.auto_res_limit_sec == 0 or self.auto_res_limit_timer < self.auto_res_limit_sec) and \
      (self.auto_res_delay == 0 or self.auto_res_delay_timer >= self.auto_res_delay):
